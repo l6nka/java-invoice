@@ -13,6 +13,12 @@ public abstract class Product {
 		if(name == null || name.isEmpty()) {
 			throw new IllegalArgumentException("Product name can not be empty.");
 		}
+		if(price == null) {
+			throw new IllegalArgumentException("Price can not be empty.");
+		}
+		if(price.compareTo(BigDecimal.ZERO) < 0) {
+			throw new IllegalArgumentException("Price can not be negative.");
+		}
 		this.name = name;
 		this.price = price;
 		this.taxPercent = tax;
