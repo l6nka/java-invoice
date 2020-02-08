@@ -34,12 +34,18 @@ public class Invoice {
 		BigDecimal sum = BigDecimal.ZERO;
 		for (Product product: this.products.keySet()) {
 			Integer quantity = this.products.get(product);
-			sum = sum.add(product.getPriceWithTax().multiply(new BigDecimal(quantity)));
+			sum = sum.add((product.getPriceWithTax().subtract(product.getPrice())).multiply(new BigDecimal(quantity)));
 		}
 		return sum;
 	}
 	
 
 	public BigDecimal getGrossPrice() {
-		return BigDecimal.ZERO;	}
+		BigDecimal sum = BigDecimal.ZERO;
+		for (Product product: this.products.keySet()) {
+			Integer quantity = this.products.get(product);
+			sum = sum.add(product.getPriceWithTax().multiply(new BigDecimal(quantity)));
+		}
+		return sum;
+	}
 }
