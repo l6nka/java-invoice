@@ -17,6 +17,9 @@ public class Invoice {
 
 
 	public void addProduct(Product product, Integer quantity) {
+		if(quantity == null || quantity < 1) {
+			throw new IllegalArgumentException("Product quantity is invalid.");
+		}
 		this.products.put(product, quantity);
 		
 	}
