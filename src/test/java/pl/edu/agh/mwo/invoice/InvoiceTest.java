@@ -1,17 +1,15 @@
 package pl.edu.agh.mwo.invoice;
 
-import java.math.BigDecimal;
-
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+
+import java.math.BigDecimal;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -103,5 +101,25 @@ public class InvoiceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInvoiceWithNegativeQuantity() {
         invoice.addProduct(new DairyProduct("Zsiadle mleko", new BigDecimal("5.55")), -1);
+    }
+
+    @Test
+    public void testInvoiceHasNumber() {
+        int number = invoice.getNumber();
+        Assert.assertTrue(number > 0);
+    }
+
+    @Test
+    public void testTwoInvoiceHaveDifferentNumbers() {
+        int number = invoice.getNumber();
+        int number2 = new Invoice().getNumber();
+        Assert.assertNotEquals(number, number2);
+    }
+
+    @Test
+    public void testTwoInvoiceHaveConsequentNumbers() {
+        int number = invoice.getNumber();
+        int number2 = new Invoice().getNumber();
+        Assert.assertTrue(number < number2);
     }
 }
