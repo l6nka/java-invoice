@@ -73,11 +73,38 @@ public class Invoice {
         return invoiceId;
     }
 
-//    public int getProductsCount() {
-//        return products.size();
-//    }
+    public int getProductsCount() {
+        return products.size();
+    }
 
     public Map<Product, Integer> getProducts() {
         return products;
+    }
+
+    public String getProductsListed() {
+        StringBuilder productList = new StringBuilder();
+        products.forEach((product, quantity) -> {
+            String productData =
+                    product.getName() + ", " +
+                    quantity  + ", " +
+                    (product.getPrice().multiply(BigDecimal.valueOf(quantity))) + ", " +
+                    (product.getPriceWithTax().multiply(BigDecimal.valueOf(quantity))) + "\n";
+            productList.append(productData);
+        });
+        return productList.toString();
+    }
+
+    public String getInvoiceHeader() {
+        return "Faktura nr " + invoiceId + "\n";
+    }
+
+    public String getInvoiceFooter() {
+        return "Liczba pozycji: " + getProductsCount();
+    }
+
+    public String print() {
+        return getInvoiceHeader() +
+                getProductsListed() +
+                getInvoiceFooter();
     }
 }

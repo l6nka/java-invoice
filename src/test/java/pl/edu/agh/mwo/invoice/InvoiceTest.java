@@ -111,17 +111,24 @@ public class InvoiceTest {
     }
 
     @Test
-    public void testTwoInvoiceHaveDifferentNumbers() {
+    public void testTwoInvoicesHaveDifferentNumbers() {
         int number = invoice.getNumber();
         int number2 = new Invoice().getNumber();
         Assert.assertNotEquals(number, number2);
     }
 
     @Test
-    public void testTwoInvoiceHaveConsequentNumbers() {
+    public void testTwoInvoicesHaveConsequentNumbers() {
         int number = invoice.getNumber();
         int number2 = new Invoice().getNumber();
         Assert.assertTrue(number < number2);
+    }
+
+    @Test
+    public void testInvoiceHeaderHasInvoiceNumber() {
+        int number = invoice.getNumber();
+        String invoiceHeader = invoice.getInvoiceHeader();
+        Assert.assertTrue(invoiceHeader.matches("Faktura nr " + number + "\n"));
     }
 
     @Test
@@ -139,5 +146,39 @@ public class InvoiceTest {
         invoice.addProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")), 4);
         Map<Product, Integer> products = invoice.getProducts();
         Product existingProduct = invoice.checkExistingProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")));
-        Assert.assertEquals(4, (int) products.get(existingProduct));    }
+        Assert.assertEquals(4, (int) products.get(existingProduct));
+    }
+
+    @Test
+    public void testCountSameProductsOnInvoiceFooter() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 4);
+        String printedInvoice = invoice.getInvoiceFooter();
+        Assert.assertTrue(printedInvoice.contains("Liczba pozycji: 1"));
+    }
+
+    @Test
+    public void testCountDifferentProductsOnInvoiceFooter() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")), 4);
+        String printedInvoice = invoice.getInvoiceFooter();
+        Assert.assertTrue(printedInvoice.contains("Liczba pozycji: 2"));
+    }
+
+    @Test
+    public void testSameProductsOnPrintedInvoice() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 4);
+        String printedInvoice = invoice.print();
+        Assert.assertTrue(printedInvoice.contains("Kefir, 7, 350, 378.00"));
+    }
+
+    @Test
+    public void testDifferentProductsOnPrintedInvoice() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")), 4);
+        String printedInvoice = invoice.print();
+        Assert.assertTrue(printedInvoice.contains("Kefir, 3, 150, 162.00"));
+        Assert.assertTrue(printedInvoice.contains("Kefir, 4, 200, 200"));
+    }
 }
