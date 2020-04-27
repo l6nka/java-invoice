@@ -10,6 +10,7 @@ import pl.edu.agh.mwo.invoice.product.Product;
 import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 public class InvoiceTest {
     private Invoice invoice;
@@ -122,4 +123,21 @@ public class InvoiceTest {
         int number2 = new Invoice().getNumber();
         Assert.assertTrue(number < number2);
     }
+
+    @Test
+    public void testQuantityOfSameProductsOnOneInvoice() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 4);
+        Map<Product, Integer> products = invoice.getProducts();
+        Product existingProduct = invoice.checkExistingProduct(new DairyProduct("Kefir", new BigDecimal("50")));
+        Assert.assertEquals(7, (int) products.get(existingProduct));
+    }
+
+    @Test
+    public void testQuantityOfProductsWithSameNameAndPriceButDifferentTypeOnOneInvoice() {
+        invoice.addProduct(new DairyProduct("Kefir", new BigDecimal("50")), 3);
+        invoice.addProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")), 4);
+        Map<Product, Integer> products = invoice.getProducts();
+        Product existingProduct = invoice.checkExistingProduct(new TaxFreeProduct("Kefir", new BigDecimal("50")));
+        Assert.assertEquals(4, (int) products.get(existingProduct));    }
 }

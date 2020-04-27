@@ -9,23 +9,42 @@ public class Invoice {
 
     private static int nextInvoiceID = 1;
     private int invoiceId;
+    private Map<Product, Integer> products = new HashMap<>();
 
     public Invoice() {
         this.invoiceId = nextInvoiceID;
         nextInvoiceID++;
     }
 
-    private Map<Product, Integer> products = new HashMap<>();
-
     public void addProduct(Product product) {
         addProduct(product, 1);
     }
 
     public void addProduct(Product product, Integer quantity) {
+        isProductValid(product, quantity);
+        Product existingProduct = checkExistingProduct(product);
+        if (existingProduct != null) {
+            products.put(existingProduct, products.get(existingProduct) + quantity);
+        } else {
+            products.put(product, quantity);
+        }
+    }
+
+    public Product checkExistingProduct(Product product) {
+        for (Product key : products.keySet()) {
+            if (key.getName().equals(product.getName()) &&
+                key.getPrice().equals(product.getPrice()) &&
+                key.getClass().equals(product.getClass())) {
+                return key;
+            }
+        }
+        return null;
+    }
+
+    public void isProductValid(Product product, Integer quantity) {
         if (product == null || quantity <= 0) {
             throw new IllegalArgumentException();
         }
-        products.put(product, quantity);
     }
 
     public BigDecimal getNetTotal() {
@@ -51,7 +70,14 @@ public class Invoice {
     }
 
     public int getNumber() {
-        System.out.print(invoiceId + "\n");
         return invoiceId;
+    }
+
+//    public int getProductsCount() {
+//        return products.size();
+//    }
+
+    public Map<Product, Integer> getProducts() {
+        return products;
     }
 }
