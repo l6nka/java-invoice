@@ -184,7 +184,6 @@ public class InvoiceTest {
         invoice.addProduct(new FuelCanister("Pb98", new BigDecimal("100")), 3);
         invoice.addProduct(new BottleOfWineProduct("Patyk", new BigDecimal("150")), 4);
         String printedInvoice = invoice.print();
-        System.out.println(printedInvoice);
         Assert.assertTrue(printedInvoice.contains("Pb98, 3, 300, 316.68"));
         Assert.assertTrue(printedInvoice.contains("Patyk, 4, 600, 760.24"));
     }
