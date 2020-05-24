@@ -4,10 +4,7 @@ import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pl.edu.agh.mwo.invoice.product.DairyProduct;
-import pl.edu.agh.mwo.invoice.product.OtherProduct;
-import pl.edu.agh.mwo.invoice.product.Product;
-import pl.edu.agh.mwo.invoice.product.TaxFreeProduct;
+import pl.edu.agh.mwo.invoice.product.*;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -181,4 +178,16 @@ public class InvoiceTest {
         Assert.assertTrue(printedInvoice.contains("Kefir, 3, 150, 162.00"));
         Assert.assertTrue(printedInvoice.contains("Kefir, 4, 200, 200"));
     }
+
+    @Test
+    public void testProductsWithExcise() {
+        invoice.addProduct(new FuelCanister("Pb98", new BigDecimal("100")), 3);
+        invoice.addProduct(new BottleOfWineProduct("Patyk", new BigDecimal("150")), 4);
+        String printedInvoice = invoice.print();
+        System.out.println(printedInvoice);
+        Assert.assertTrue(printedInvoice.contains("Pb98, 3, 300, 316.68"));
+        Assert.assertTrue(printedInvoice.contains("Patyk, 4, 600, 760.24"));
+    }
+
+
 }
